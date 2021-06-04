@@ -3,6 +3,8 @@ const Moment = require("moment-timezone")
 function getSlots({ from, to, availability, unavailability, duration }) {
 
     duration = parseInt(duration)
+    let limitFrom = Moment.utc(from).seconds(0).milliseconds(0)
+    let limitTo = Moment.utc(to).seconds(0).milliseconds(0)
 
     let availabilityByMinute = {}
 
@@ -14,14 +16,12 @@ function getSlots({ from, to, availability, unavailability, duration }) {
         if (!array) continue
 
         for (const obj of array) {
-            var slotFrom = Moment.utc(obj.from)
-            var slotTo = Moment.utc(obj.to)
-            var limitFrom = Moment.utc(from)
-            var limitTo = Moment.utc(to)
+            const slotFrom = Moment.utc(obj.from)
+            const slotTo = Moment.utc(obj.to)
 
             if (slotFrom.diff(limitFrom) > 0 && limitTo.diff(slotTo) > 0) {
-                var minutes1 = slotFrom.diff(limitFrom, "minutes")
-                var minutes2 = slotTo.diff(limitFrom, "minutes")
+                const minutes1 = slotFrom.diff(limitFrom, "minutes")
+                const minutes2 = slotTo.diff(limitFrom, "minutes")
 
                 for (let i = minutes1; i < minutes2; i++) {
                     availabilityByMinute[i] = type === "availability" ? true : false
@@ -88,6 +88,8 @@ function getSlotsMultipleUsers({ from, to, users, duration }) {
             unavailability,
             duration,
         })
+
+        if (!availableSlots) continue
 
         for (const [day, slots] of Object.entries(availableSlots)) {
             if (!availableSlotsByUsers[day]) availableSlotsByUsers[day] = []
