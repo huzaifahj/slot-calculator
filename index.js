@@ -131,8 +131,14 @@ function convertSlotsToTimezone({ slots, timezone }) {
     return slotsWithTimezone
 }
 
+function getVersion() {
+    const {version} = require('./package.json')
+    return version
+}
+
 module.exports = {
     getSlots,
     getSlotsMultipleUsers,
     convertSlotsToTimezone,
+    getVersion,
 }
