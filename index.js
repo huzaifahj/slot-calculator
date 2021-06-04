@@ -73,7 +73,10 @@ function getSlots({ from, to, availability, unavailability, duration }) {
         })
     }
 
-    return availableSlotsByDay
+    return {
+        availableSlots: availableSlotsByDay,
+        availableDates: getDatesFromSlots(availableSlotsByDay)
+    }
 
 }
 
@@ -81,7 +84,7 @@ function getSlotsMultipleUsers({ from, to, users, duration }) {
     let availableSlotsByUsers = {}
 
     for (const [user, { availability, unavailability }] of Object.entries(users)) {
-        let availableSlots = getSlots({
+        let { availableSlots } = getSlots({
             from,
             to,
             availability,
@@ -111,7 +114,10 @@ function getSlotsMultipleUsers({ from, to, users, duration }) {
         }
     }
 
-    return availableSlotsByUsers
+    return {
+        availableSlots: availableSlotsByUsers,
+        availableDates: getDatesFromSlots(availableSlotsByUsers)
+    }
 }
 
 function convertSlotsToTimezone({ slots, timezone }) {
@@ -128,12 +134,24 @@ function convertSlotsToTimezone({ slots, timezone }) {
         }
     }
 
-    return slotsWithTimezone
+    return {
+        availableSlots: slotsWithTimezone,
+        availableDates: getDatesFromSlots(slotsWithTimezone)
+    }
 }
 
 function getVersion() {
-    const {version} = require('./package.json')
+    const { version } = require('./package.json')
     return version
+}
+
+function getDatesFromSlots(slots) {
+    const now = Moment();
+    return Object.keys(slots).sort(
+        (a, b) => {
+            return Moment(a).diff(now) - Moment(b).diff(now);
+        }
+    );
 }
 
 module.exports = {
