@@ -47,13 +47,24 @@ function getSlots({ from, to, availability, unavailability, duration }) {
     const max = Math.max(...Array.from(availableMinutes.values()))
 
     for (let i = min; i <= max; i++) {
-        if (availableMinutes.has(i) && availableMinutes.has(i + duration - 1)) {
+        let slotAvailable = true
+        for (let j = i; j < i + duration - 1; j++) {
+            if (!availableMinutes.has(j)) {
+                slotAvailable = false
+            }
+        }
+        if (slotAvailable) {
             availableSlots.push(i)
             i = i + duration - 1
         }
     }
 
-    if (availableSlots.length === 0) return null
+    if (availableSlots.length === 0) {
+        return {
+            availableSlots: null,
+            availableDates: null
+        }
+    }
 
     // Normalise slots by day and convert to viewer timezone
 
