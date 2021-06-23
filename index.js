@@ -127,6 +127,12 @@ function getSlotsMultipleUsers({ from, to, users, duration }) {
         }
     }
 
+    for (const [day, slots] of Object.entries(availableSlotsByUsers)) {
+        availableSlotsByUsers[day] = slots.sort((a, b) => {
+            return Moment(`2021-01-01 ${a.from}`).diff(Moment(`2021-01-01 ${b.from}`), "minutes")
+        })
+    }
+
     return {
         availableSlots: availableSlotsByUsers,
         availableDates: getDatesFromSlots(availableSlotsByUsers)
