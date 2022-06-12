@@ -1,7 +1,20 @@
 {
   "name": "slot-calculator",
   "version": "2.0.0",
-  "description": "",
+  "description": "Calculate time slots for your users to choose from.",
+  "keywords": [
+    "slots",
+    "time-slots",
+    "time-slot",
+    "schedule",
+    "scheduler",
+    "availability",
+    "unavailability",
+    "calendar",
+    "appointment",
+    "booking",
+    "calendly"
+  ],
   "main": "dist/index.js",
   "scripts": {
     "dev": "vitest",
@@ -11,10 +24,14 @@
     "docs": "typedoc --out docs index.ts"
   },
   "pre-commit": {
-    "run": ["build", "test", "docs"]
+    "run": [
+      "build",
+      "test",
+      "docs"
+    ]
   },
   "author": "Huzaifah Jearally",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "luxon": "^2.4.0"
   },
