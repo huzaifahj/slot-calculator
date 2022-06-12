@@ -1,6 +1,6 @@
 # Slot Calculator <!-- omit in toc --> 
 
-![GitHub branch checks state](https://img.shields.io/github/checks-status/huzaifahj/slot-calculator/main?label=tests) ![npm](https://img.shields.io/npm/dm/slot-calculator)
+![GitHub branch checks state](https://img.shields.io/github/checks-status/huzaifahj/slot-calculator/main?label=tests) [![npm](https://img.shields.io/npm/dm/slot-calculator)](https://www.npmjs.com/package/slot-calculator)
 
 Calculate time slots for your users to choose from.
 
