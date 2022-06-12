@@ -33,6 +33,10 @@ TypeScript language support in your IDE is sufficient to make use of this packag
 
 ## Examples
 
+```ts
+import { getSlots } from "slot-calculator"
+```
+
 ### Basic usage
 
 ```ts
