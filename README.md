@@ -11,20 +11,16 @@ Calculate time slots for your users to choose from.
 
 ## Table of contents <!-- omit in toc --> 
 
-- [Installation](#installation)
 - [Documentation](#documentation)
 - [Usage](#usage)
+  - [Setup](#setup)
+  - [Returned values](#returned-values)
 - [Examples](#examples)
   - [Basic usage](#basic-usage)
   - [With availabilities and unavailabilities](#with-availabilities-and-unavailabilities)
   - [With multiple users](#with-multiple-users)
   - [With timezones](#with-timezones)
 
-## Installation
-
-```shell
-npm install slot-calculator
-```
 
 ## Documentation
 
@@ -34,10 +30,22 @@ TypeScript language support in your IDE is sufficient to make use of this packag
 
 ## Usage
 
+### Setup
+
+```shell
+npm install slot-calculator
+```
 ```ts
 import { getSlots } from "slot-calculator"
-const { availableSlots, allDates, availableDates, slotsByDay, timeTaken } = getSlots(config)
+
+const { allSlots } = getSlots({
+  from: "2022-01-01",
+  to: "2022-01-02",
+  duration: 60,
+})
 ```
+
+### Returned values
 
 - `allSlots`: An array of all generated slots. Only use this as a starting point for manipulating the output.
 - `availableSlots`: An array of available slots. Only use this as a starting point for manipulating the output.
@@ -53,6 +61,7 @@ For these examples to work, use this setup code:
 
 ```ts
 import { DateTime, Settings } from "luxon";
+
 Settings.defaultZone = "UTC";
 const dateTimeRef = DateTime.utc(2022, 1, 1);
 ```

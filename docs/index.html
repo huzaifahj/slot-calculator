@@ -15,9 +15,12 @@
   <h2>Table of contents <!-- omit in toc --></h2>
 </a>
 <ul>
-<li><a href="#installation">Installation</a></li>
 <li><a href="#documentation">Documentation</a></li>
-<li><a href="#usage">Usage</a></li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#returned-values">Returned values</a></li>
+</ul>
+</li>
 <li><a href="#examples">Examples</a><ul>
 <li><a href="#basic-usage">Basic usage</a></li>
 <li><a href="#with-availabilities-and-unavailabilities">With availabilities and unavailabilities</a></li>
@@ -26,12 +29,6 @@
 </ul>
 </li>
 </ul>
-
-<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
-  <h2>Installation</h2>
-</a>
-<pre><code class="language-shell"><span class="hl-0">npm install slot-calculator</span>
-</code></pre>
 
 <a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
   <h2>Documentation</h2>
@@ -42,8 +39,18 @@
 <a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
   <h2>Usage</h2>
 </a>
-<pre><code class="language-ts"><span class="hl-1">import</span><span class="hl-0"> { </span><span class="hl-2">getSlots</span><span class="hl-0"> } </span><span class="hl-1">from</span><span class="hl-0"> </span><span class="hl-3">&quot;slot-calculator&quot;</span><br/><span class="hl-4">const</span><span class="hl-0"> { </span><span class="hl-5">availableSlots</span><span class="hl-0">, </span><span class="hl-5">allDates</span><span class="hl-0">, </span><span class="hl-5">availableDates</span><span class="hl-0">, </span><span class="hl-5">slotsByDay</span><span class="hl-0">, </span><span class="hl-5">timeTaken</span><span class="hl-0"> } = </span><span class="hl-6">getSlots</span><span class="hl-0">(</span><span class="hl-2">config</span><span class="hl-0">)</span>
+
+<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
+  <h3>Setup</h3>
+</a>
+<pre><code class="language-shell"><span class="hl-0">npm install slot-calculator</span>
 </code></pre>
+<pre><code class="language-ts"><span class="hl-1">import</span><span class="hl-0"> { </span><span class="hl-2">getSlots</span><span class="hl-0"> } </span><span class="hl-1">from</span><span class="hl-0"> </span><span class="hl-3">&quot;slot-calculator&quot;</span><br/><br/><span class="hl-4">const</span><span class="hl-0"> { </span><span class="hl-5">allSlots</span><span class="hl-0"> } = </span><span class="hl-6">getSlots</span><span class="hl-0">({</span><br/><span class="hl-0">  </span><span class="hl-2">from:</span><span class="hl-0"> </span><span class="hl-3">&quot;2022-01-01&quot;</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-2">to:</span><span class="hl-0"> </span><span class="hl-3">&quot;2022-01-02&quot;</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-2">duration:</span><span class="hl-0"> </span><span class="hl-7">60</span><span class="hl-0">,</span><br/><span class="hl-0">})</span>
+</code></pre>
+
+<a href="#returned-values" id="returned-values" style="color: inherit; text-decoration: none;">
+  <h3>Returned values</h3>
+</a>
 <ul>
 <li><code>allSlots</code>: An array of all generated slots. Only use this as a starting point for manipulating the output.</li>
 <li><code>availableSlots</code>: An array of available slots. Only use this as a starting point for manipulating the output.</li>
@@ -58,7 +65,7 @@
   <h2>Examples</h2>
 </a>
 <p>For these examples to work, use this setup code:</p>
-<pre><code class="language-ts"><span class="hl-1">import</span><span class="hl-0"> { </span><span class="hl-2">DateTime</span><span class="hl-0">, </span><span class="hl-2">Settings</span><span class="hl-0"> } </span><span class="hl-1">from</span><span class="hl-0"> </span><span class="hl-3">&quot;luxon&quot;</span><span class="hl-0">;</span><br/><span class="hl-2">Settings</span><span class="hl-0">.</span><span class="hl-2">defaultZone</span><span class="hl-0"> = </span><span class="hl-3">&quot;UTC&quot;</span><span class="hl-0">;</span><br/><span class="hl-4">const</span><span class="hl-0"> </span><span class="hl-5">dateTimeRef</span><span class="hl-0"> = </span><span class="hl-2">DateTime</span><span class="hl-0">.</span><span class="hl-6">utc</span><span class="hl-0">(</span><span class="hl-7">2022</span><span class="hl-0">, </span><span class="hl-7">1</span><span class="hl-0">, </span><span class="hl-7">1</span><span class="hl-0">);</span>
+<pre><code class="language-ts"><span class="hl-1">import</span><span class="hl-0"> { </span><span class="hl-2">DateTime</span><span class="hl-0">, </span><span class="hl-2">Settings</span><span class="hl-0"> } </span><span class="hl-1">from</span><span class="hl-0"> </span><span class="hl-3">&quot;luxon&quot;</span><span class="hl-0">;</span><br/><br/><span class="hl-2">Settings</span><span class="hl-0">.</span><span class="hl-2">defaultZone</span><span class="hl-0"> = </span><span class="hl-3">&quot;UTC&quot;</span><span class="hl-0">;</span><br/><span class="hl-4">const</span><span class="hl-0"> </span><span class="hl-5">dateTimeRef</span><span class="hl-0"> = </span><span class="hl-2">DateTime</span><span class="hl-0">.</span><span class="hl-6">utc</span><span class="hl-0">(</span><span class="hl-7">2022</span><span class="hl-0">, </span><span class="hl-7">1</span><span class="hl-0">, </span><span class="hl-7">1</span><span class="hl-0">);</span>
 </code></pre>
 
 <a href="#basic-usage" id="basic-usage" style="color: inherit; text-decoration: none;">
