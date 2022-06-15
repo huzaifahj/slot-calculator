@@ -13,11 +13,12 @@ Calculate time slots for your users to choose from.
 
 - [Installation](#installation)
 - [Documentation](#documentation)
+- [Usage](#usage)
 - [Examples](#examples)
   - [Basic usage](#basic-usage)
-  - [With user availabilities](#with-user-availabilities)
+  - [With availabilities and unavailabilities](#with-availabilities-and-unavailabilities)
+  - [With multiple users](#with-multiple-users)
   - [With timezones](#with-timezones)
-  - [Helper variables](#helper-variables)
 
 ## Installation
 
@@ -31,83 +32,105 @@ npm install slot-calculator
 
 TypeScript language support in your IDE is sufficient to make use of this package's types and annotations.
 
-## Examples
+## Usage
 
 ```ts
 import { getSlots } from "slot-calculator"
+const { availableSlots, allDates, availableDates, slotsByDay, timeTaken } = getSlots(config)
+```
+
+- `allSlots`: An array of all generated slots. Only use this as a starting point for manipulating the output.
+- `availableSlots`: An array of available slots. Only use this as a starting point for manipulating the output.
+- `allDates`: An array of dates, including unavailable ones, between the from and to configuration variables. Use this to allow users to specify their own datetime, but within your chosen bounds.
+- `availableDates`: An array of available dates. Use this to mark on a calendar which dates can be selected.
+- `allSlotsByDay`: Once a user has selected a date, use this object to easily find all the slots for that day.
+- `availableSlotsByDay`: Once a user has selected a date, use this object to easily find the available slots for that day.
+- `timeTaken`: Worried that the number crunching is slowing down your app? Monitor this variable to see the time taken by slot calculator.
+
+## Examples
+
+For these examples to work, use this setup code:
+
+```ts
+import { DateTime, Settings } from "luxon";
+Settings.defaultZone = "UTC";
+const dateTimeRef = DateTime.utc(2022, 1, 1);
 ```
 
 ### Basic usage
 
 ```ts
-const { slots } = getSlots({
-  from: DateTime.utc(2022, 1, 1).toISO(),
-  to: DateTime.utc(2022, 1, 8).toISO(),
-  availability: [
-    {
-      from: DateTime.utc(2022, 1, 1, 15).toISO(),
-      to: DateTime.utc(2022, 1, 1, 16).toISO(),
-    },
-  ],
+getSlots({
+  from: dateTimeRef.toISO(),
+  to: dateTimeRef.plus({ hour: 2 }).toISO(),
   duration: 60,
-})
+});
 ```
 
-### With user availabilities
+### With availabilities and unavailabilities
 
 ```ts
-const { slots } = getSlots({
-  from: DateTime.utc(2022, 1, 1).toISO(),
-  to: DateTime.utc(2022, 1, 8).toISO(),
+getSlots({
+  from: dateTimeRef.toISO(),
+  to: dateTimeRef.plus({ hour: 3 }).toISO(),
   availability: [
     {
-      day: "Monday",
-      from: "14:00",
-      to: "16:00",
-      metadata: {
-        user: "Alice",
-      },
-    },
-    {
-      day: "Monday",
-      from: "15:00",
-      to: "17:00",
-      metadata: {
-        user: "Bob",
-      },
+      from: dateTimeRef.plus({ hour: 1 }).toISO(),
+      to: dateTimeRef.plus({ hour: 2 }).toISO(),
     },
   ],
-  duration: 60,
-})
-```
-
-### With timezones
-
-```ts
-const { slots } = getSlots({
-  from: DateTime.utc(2022, 1, 1).toISO(),
-  to: DateTime.utc(2022, 1, 8).toISO(),
-  outputTimezone: "Europe/Paris",
-  availability: [
+  unavailability: [
     {
-      day: "Monday",
-      from: "14:00",
-      to: "16:00",
-      timezone: "America/New_York",
+      from: dateTimeRef.plus({ hour: 2 }).toISO(),
+      to: dateTimeRef.plus({ hour: 3 }).toISO(),
     },
   ],
   duration: 60,
 });
 ```
 
-### Helper variables
+### With multiple users
 
 ```ts
-const { slots, allDates, availableDates, slotsByDay, timeTaken } = getSlots(config)
+getSlots({
+  from: dateTimeRef.toISO(),
+  to: dateTimeRef.plus({ hour: 2 }).toISO(),
+  availability: [
+    {
+      day: "Saturday",
+      from: "00:00",
+      to: "01:00",
+      metadata: {
+        user: "Alice",
+      },
+    },
+    {
+      from: dateTimeRef.plus({ hour: 1 }).toISO(),
+      to: dateTimeRef.plus({ hour: 2 }).toISO(),
+      metadata: {
+        user: "Bob",
+      },
+    },
+  ],
+  duration: 60,
+});
 ```
 
-- `slots`: An array of available slots. Only use this as a starting point for manipulating the output.
-- `allDates`: An array of dates, including unavailable ones, between the `from` and `to` configuration variables. Use this to allow users to specify their own datetime, but within your chosen bounds.
-- `availableDates`: An array of available dates. Use this to mark on a calendar which dates can be selected.
-- `slotsByDay`: Once a user has selected a date, use this object to easily find the slots for that day.
-- `timeTaken`: Worried that the number crunching is slowing down your app? Monitor this variable to see the time taken by slot calculator.
+### With timezones
+
+```ts
+getSlots({
+  from: dateTimeRef.toISO(),
+  to: dateTimeRef.plus({ hour: 2 }).toISO(),
+  outputTimezone: "Europe/Paris",
+  availability: [
+    {
+      day: "Saturday",
+      from: "01:00",
+      to: "02:00",
+      timezone: "Europe/Paris",
+    },
+  ],
+  duration: 60,
+});
+```
