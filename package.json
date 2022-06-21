@@ -1,6 +1,6 @@
 {
   "name": "slot-calculator",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Calculate time slots for your users to choose from.",
   "homepage": "https://github.com/huzaifahj/slot-calculator",
   "keywords": [
@@ -21,7 +21,7 @@
     "dev": "vitest",
     "test": "vitest run",
     "build": "tsc",
-    "postinstall": "npm run build",
+    "prepare": "npm run build",
     "docs": "typedoc --out docs index.ts"
   },
   "author": "Huzaifah Jearally",
