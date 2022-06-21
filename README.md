@@ -12,6 +12,7 @@ Calculate time slots for your users to choose from.
 ## Table of contents <!-- omit in toc --> 
 
 - [Documentation](#documentation)
+- [Demo](#demo)
 - [Usage](#usage)
   - [Setup](#setup)
   - [Returned values](#returned-values)
@@ -24,9 +25,11 @@ Calculate time slots for your users to choose from.
 
 ## Documentation
 
-[View the JS/TS reference](https://huzaifahj.github.io/slot-calculator)
+[View the JS/TS reference](https://huzaifahj.github.io/slot-calculator). TypeScript language support in your IDE is sufficient to make use of this package's types and annotations.
 
-TypeScript language support in your IDE is sufficient to make use of this package's types and annotations.
+## Demo
+
+[Play with a live demo on CodeSandbox](https://codesandbox.io/s/slot-calculator-demo-cjlwo0?file=/src/index.ts)
 
 ## Usage
 
