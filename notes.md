@@ -5,3 +5,7 @@
 - Weak timezone support: could not set timezones on a per availability basis
 - Outputted slots did not have `to` property, just a `time`
 - No TypeScript support (or even a declaration file)
+
+# Things to remember
+
+- Run `npm run docs` before committing.
