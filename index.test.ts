@@ -460,3 +460,65 @@ test("Helper variables", async () => {
     ],
   });
 });
+
+test("Weekdays are in a specified locale", () => {
+  // true false
+  const { allSlots } = getSlots({
+    from: dateTimeRef.plus({ hour: 3 }).toISO(),
+    to: dateTimeRef.plus({ hour: 5 }).toISO(),
+    outputTimezone: "America/Sao_Paulo",
+    duration: 60,
+    availability: [
+      {
+        day: {
+          text: "sábado",
+          locale: "pt-br",
+        },
+        from: "00:00",
+        to: "01:00",
+        timezone: "America/Sao_Paulo",
+      },
+    ],
+  });
+
+  expect(allSlots).toEqual([
+    {
+      from: "2022-01-01T00:00:00.000-03:00",
+      to: "2022-01-01T01:00:00.000-03:00",
+      available: true,
+    },
+    {
+      from: "2022-01-01T01:00:00.000-03:00",
+      to: "2022-01-01T02:00:00.000-03:00",
+      available: false,
+    },
+  ]);
+});
+
+test("Availability bounds include from and to", () => {
+  // true false
+  const { allSlots } = getSlots({
+    from: dateTimeRef.plus({ hour: 8 }).toISO(),
+    to: dateTimeRef.plus({ hour: 10 }).toISO(),
+    duration: 60,
+    availability: [
+      {
+        from: dateTimeRef.toISO(),
+        to: dateTimeRef.plus({ hour: 23 }).toISO(),
+      },
+    ],
+  });
+
+  expect(allSlots).toEqual([
+    {
+      from: "2022-01-01T08:00:00.000Z",
+      to: "2022-01-01T09:00:00.000Z",
+      available: true,
+    },
+    {
+      from: "2022-01-01T09:00:00.000Z",
+      to: "2022-01-01T10:00:00.000Z",
+      available: true,
+    },
+  ]);
+});

@@ -10,43 +10,7 @@ export type Day =
   | "Saturday"
   | "Sunday";
 
-export type InputSlot = (
-  | {
-      /**
-       * Day of the week (e.g. Monday).
-       */
-      day: Day;
-      /**
-       * Time in 24 hour format (e.g. 14:30).
-       */
-      from: string;
-      /**
-       * Time in 24 hour format (e.g. 17:45).
-       */
-      to: string;
-      /**
-       * IANA zone (e.g. "America/New_York"). Defaults to local.
-       */
-      timezone?: string;
-    }
-  | {
-      /**
-       * ISO string.
-       */
-      from: string;
-      /**
-       * ISO string.
-       */
-      to: string;
-    }
-) & {
-  /**
-   * Any other metadata.
-   */
-  metadata?: Record<any, any>;
-};
-
-export interface OutputSlot {
+export type ISOSlot = {
   /**
    * ISO string.
    */
@@ -55,6 +19,48 @@ export interface OutputSlot {
    * ISO string.
    */
   to: string;
+};
+
+export type WeekdaySlot = {
+  /**
+   * Day of the week (e.g. `Monday` or `segunda-feira`). Will be interpreted in current locale. Use an object here to specify locale.
+   */
+  day:
+    | Day
+    | (string & {})
+    | {
+        /**
+         * Day of the week (e.g. `Monday` or `segunda-feira`)
+         */
+        text: string;
+        /**
+         * Locale supported by `Intl` API (e.g. `en-gb` or `pt-br`)
+         */
+        locale: string;
+      };
+} & {
+  /**
+   * Time in 24 hour format (e.g. 14:30).
+   */
+  from: string;
+  /**
+   * Time in 24 hour format (e.g. 17:45).
+   */
+  to: string;
+  /**
+   * IANA zone (e.g. `America/New_York`). Defaults to local.
+   */
+  timezone?: string;
+};
+
+export type InputSlot = (WeekdaySlot | ISOSlot) & {
+  /**
+   * Any other metadata.
+   */
+  metadata?: Record<any, any>;
+};
+
+export type OutputSlot = ISOSlot & {
   /**
    * Is this slot available?
    */
@@ -67,7 +73,7 @@ export interface OutputSlot {
    * Array of metadata which is unavailable for this slot.
    */
   metadataUnavailable?: Record<any, any>[];
-}
+};
 
 export interface GetSlots {
   /**
@@ -122,7 +128,7 @@ export function getSlots(config: {
    */
   duration: number;
   /**
-   * IANA zone (e.g. "Europe/Paris"). Defaults to local.
+   * IANA zone (e.g. `Europe/Paris`). Defaults to local.
    */
   outputTimezone?: string;
   /**
@@ -147,7 +153,7 @@ export function getSlots(config: {
   // Get dates for each day within bounds
   let datesByWeekdayByTimezone: {
     [timezone: string]: {
-      [weekday in Day]?: string[];
+      [weekday: string]: string[] | undefined;
     };
   } = {};
 
@@ -185,7 +191,13 @@ export function getSlots(config: {
               dateTime.valueOf() <= to.setZone(timezone).valueOf();
               dateTime = dateTime.plus({ days: 1 })
             ) {
-              const weekday = dateTime.weekdayLong as Day;
+              let weekday: string;
+              if (typeof slot.day === "string") {
+                weekday = dateTime.weekdayLong;
+              } else {
+                weekday = dateTime.setLocale(slot.day.locale).weekdayLong;
+              }
+
               if (!datesByWeekdayByTimezone[timezone])
                 datesByWeekdayByTimezone[timezone] = {};
               if (!datesByWeekdayByTimezone[timezone][weekday])
@@ -198,9 +210,11 @@ export function getSlots(config: {
           }
         };
 
-        const generatedSlots = getDatesByDay(slot.timezone ?? "UTC")[
-          slot.day
-        ]?.map((date) => {
+        const generatedSlots: InputSlot[] = [];
+
+        const dayText = typeof slot.day === "string" ? slot.day : slot.day.text;
+        for (const date of getDatesByDay(slot.timezone ?? "UTC")[dayText] ??
+          []) {
           const obj: InputSlot = {
             from: DateTime.fromISO(date, {
               zone: slot.timezone,
@@ -219,11 +233,11 @@ export function getSlots(config: {
               })
               .toISO(),
             metadata: slot.metadata,
-            timezone: slot.timezone,
           };
-          return obj;
-        });
-        if (generatedSlots) processInputSlots(generatedSlots, type);
+          generatedSlots.push(obj);
+        }
+
+        if (generatedSlots.length) processInputSlots(generatedSlots, type);
         continue;
       }
 
@@ -235,12 +249,8 @@ export function getSlots(config: {
         .set({ second: 0, millisecond: 0 })
         .valueOf();
 
-      // If from is after to, go to next slot
+      // If from is after to, ignore
       if (slotFromUnix > slotToUnix) continue;
-
-      // Check if slot bounds are within config bounds
-      if (fromUnix && slotFromUnix < fromUnix) continue;
-      if (toUnix && slotToUnix > toUnix) continue;
 
       // Set or delete availability for each minute
       for (let i = slotFromUnix; i < slotToUnix; i += 60000) {
