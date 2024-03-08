@@ -394,7 +394,7 @@ test("Bounds and day slot aren't the same timezone, so days of the week differ",
 
 test("Day slot across Daylight savings time", () => {
   const { allSlots } = getSlots({
-    from: DateTime.fromObject({ year: 2024, month: 3, day: 10, hour: 4 }, { zone: "America/Los_Angeles" }).toISO(),
+    from: DateTime.fromObject({ year: 2024, month: 3, day: 10, hour: 1 }, { zone: "America/Los_Angeles" }).toISO(),
     to: DateTime.fromObject({ year: 2024, month: 3, day: 10, hour: 7 }, { zone: "America/Los_Angeles" }).toISO(),
     availability: [
       {
@@ -407,7 +407,26 @@ test("Day slot across Daylight savings time", () => {
     duration: 60,
   });
 
+  console.log(allSlots);
+
+  console.log("START", DateTime.fromISO("2024-03-10T01:00:00.000-07:00").toUTC().toISO());
+  console.log("SHOULD", DateTime.fromISO("2024-03-10T05:00:00.000-07:00").toUTC().toISO());
+
   expect(allSlots).toEqual([
+    // PST is -8
+    {
+      from: DateTime.fromISO("2024-03-10T01:00:00.000-08:00").toUTC().toISO(),
+      to: DateTime.fromISO("2024-03-10T02:00:00.000-08:00").toUTC().toISO(),
+      available: false,
+    },
+    // The 2-3 slot doesn't exist
+
+    // PDT is -7
+    {
+      from: DateTime.fromISO("2024-03-10T03:00:00.000-07:00").toUTC().toISO(),
+      to: DateTime.fromISO("2024-03-10T04:00:00.000-07:00").toUTC().toISO(),
+      available: false,
+    },
     {
       from: DateTime.fromISO("2024-03-10T04:00:00.000-07:00").toUTC().toISO(),
       to: DateTime.fromISO("2024-03-10T05:00:00.000-07:00").toUTC().toISO(),
