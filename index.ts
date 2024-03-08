@@ -219,17 +219,17 @@ export function getSlots(config: {
             from: DateTime.fromISO(date, {
               zone: slot.timezone,
             })
-              .plus({
-                hours: Number(slot.from.split(":")[0]),
-                minutes: Number(slot.from.split(":")[1]),
+              .set({
+                hour: Number(slot.from.split(":")[0]),
+                minute: Number(slot.from.split(":")[1]),
               })
               .toISO(),
             to: DateTime.fromISO(date, {
               zone: slot.timezone,
             })
-              .plus({
-                hours: Number(slot.to.split(":")[0]),
-                minutes: Number(slot.to.split(":")[1]),
+              .set({
+                hour: Number(slot.to.split(":")[0]),
+                minute: Number(slot.to.split(":")[1]),
               })
               .toISO(),
             metadata: slot.metadata,
