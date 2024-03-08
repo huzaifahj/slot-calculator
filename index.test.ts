@@ -407,11 +407,6 @@ test("Day slot across Daylight savings time", () => {
     duration: 60,
   });
 
-  console.log(allSlots);
-
-  console.log("START", DateTime.fromISO("2024-03-10T01:00:00.000-07:00").toUTC().toISO());
-  console.log("SHOULD", DateTime.fromISO("2024-03-10T05:00:00.000-07:00").toUTC().toISO());
-
   expect(allSlots).toEqual([
     // PST is -8
     {
